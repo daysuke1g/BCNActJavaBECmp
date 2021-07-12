@@ -11,12 +11,16 @@ package m11.model;
  */
 public class DTOArbre extends DTOProducte
 {
-  public int alcada_cm;
+  private int alcada_cm;
         
   public DTOArbre(String pNom,float pPreu,int pAlcadaCm)
   { super(pNom,pPreu);
     alcada_cm = pAlcadaCm;
   }
+
+public int getAlcada_cm() {
+	return alcada_cm;
+}
   
     
 }

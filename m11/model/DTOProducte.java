@@ -10,8 +10,17 @@ package m11.model;
  * @author JoseLuis.Canivano
  */
 public class DTOProducte 
-{ public String nom;
-  public float preu;    
+{ 
+	public String getNom() {
+		return nom;
+	}
+
+	public float getPreu() {
+		return preu;
+	}
+
+	private String nom;
+	private float preu;    
 
 @SuppressWarnings("empty-statement")
   public DTOProducte() { ; }
@@ -20,5 +29,7 @@ public class DTOProducte
   { this.nom = nom;
     this.preu = preu;
   }
+  
+  
   
 }

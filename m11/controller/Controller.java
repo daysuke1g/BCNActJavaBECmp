@@ -27,20 +27,23 @@ import m11.repository.*;
  */
 public class Controller 
 {
-  protected HashMap<String,Floristeria> mHTFloristeria;      // Lista de Floristeries que controla el programa
-  protected HashMap<String,List<Arbre>> mHTFloristeriaArbre; // LLista o stock d'arbres de la floristeria 'key'
-  protected HashMap<String,List<Flor>>  mHTFloristeriaFlor;  // LLista o stock de flors de la floristeria 'key'
-  protected HashMap<String,List<Decoracio>> mHTFloristeriaDecoracio; // LLista o stock de decoracio de la floristeria 'key'
-  protected HashMap<String,HashMap<Integer,Ticket>>     mHTTicketsOberts;  // LLista de tickets que s'esta gestionant la venda actualment;
-  protected HashMap<String,HashMap<Integer,Ticket>>     mHTTicketsTancats; // LLista de tickets que ja s'ha gestionant la venda;  
+  protected BaseDades baseDades;	
+  //protected HashMap<String,Floristeria> mHTFloristeria;      // Lista de Floristeries que controla el programa
+  //protected HashMap<String,List<Arbre>> mHTFloristeriaArbre; // LLista o stock d'arbres de la floristeria 'key'
+  //protected HashMap<String,List<Flor>>  mHTFloristeriaFlor;  // LLista o stock de flors de la floristeria 'key'
+ // protected HashMap<String,List<Decoracio>> mHTFloristeriaDecoracio; // LLista o stock de decoracio de la floristeria 'key'
+  //protected HashMap<String,HashMap<Integer,Ticket>>     mHTTicketsOberts;  // LLista de tickets que s'esta gestionant la venda actualment;
+ // protected HashMap<String,HashMap<Integer,Ticket>>     mHTTicketsTancats; // LLista de tickets que ja s'ha gestionant la venda;  
   
   public Controller()
-  { mHTFloristeria      = new HashMap<>();
-    mHTFloristeriaArbre = new HashMap<>();
-    mHTFloristeriaFlor  = new HashMap<>();
-    mHTFloristeriaDecoracio = new HashMap<>();
-    mHTTicketsOberts    = new HashMap<>();
-    mHTTicketsTancats   = new HashMap<>();
+  { 
+	baseDades = new BaseDades();  
+	//mHTFloristeria      = new HashMap<>();
+   // mHTFloristeriaArbre = new HashMap<>();
+    //mHTFloristeriaFlor  = new HashMap<>();
+    //mHTFloristeriaDecoracio = new HashMap<>();
+    //mHTTicketsOberts    = new HashMap<>();
+    //mHTTicketsTancats   = new HashMap<>();
   }
 
   /**
@@ -51,14 +54,14 @@ public class Controller
    */
   public Floristeria crearFloristeria(String szNomFloristeria) throws Exception 
   {
-    Floristeria f = mHTFloristeria.get(szNomFloristeria);
+    Floristeria f = baseDades.getmHTFloristeria().get(szNomFloristeria);
     if(f!=null) throw new Exception("Floristeria ja existent");
 
     f = new Floristeria(szNomFloristeria);
-    mHTFloristeria.put(szNomFloristeria,f);
+    baseDades.getmHTFloristeria().put(szNomFloristeria,f);
     
-    mHTTicketsOberts.put(szNomFloristeria,new HashMap<>());
-    mHTTicketsTancats.put(szNomFloristeria,new HashMap<>());     
+    baseDades.getmHTTicketsOberts().put(szNomFloristeria,new HashMap<>());
+    baseDades.getmHTTicketsTancats().put(szNomFloristeria,new HashMap<>());     
     
     return f;
   }
@@ -71,7 +74,7 @@ public class Controller
   { String[] poLLista = null;
     
     Object o = null;
-    Collection<String> colFloristeries = mHTFloristeria.keySet();
+    Collection<String> colFloristeries = baseDades.getmHTFloristeria().keySet();
     if(colFloristeries!=null)
     { if(colFloristeries.size()>0)
       { poLLista =colFloristeries.stream()
@@ -89,13 +92,13 @@ public class Controller
    * @return 
    */
     public DTOArbre afegirArbre(String mCurrFloristeria, DTOArbre objDTO) 
-    { Arbre a = new Arbre(objDTO.nom,objDTO.preu,objDTO.alcada_cm);
-      List<Arbre> lArbresFloristeria = mHTFloristeriaArbre.get(mCurrFloristeria);       
+    { Arbre a = new Arbre(objDTO.getNom(),objDTO.getPreu(),objDTO.getAlcada_cm());
+      List<Arbre> lArbresFloristeria = baseDades.getmHTFloristeriaArbre().get(mCurrFloristeria);       
       if(lArbresFloristeria==null)
       { lArbresFloristeria = new ArrayList<>();
       }
       boolean bAdded = lArbresFloristeria.add(a);
-      mHTFloristeriaArbre.put(mCurrFloristeria, lArbresFloristeria);
+      baseDades.getmHTFloristeriaArbre().put(mCurrFloristeria, lArbresFloristeria);
       return objDTO;  
     }
 
@@ -106,13 +109,13 @@ public class Controller
      * @return 
      */            
     public DTOFlor afegirFlor(String mCurrFloristeria, DTOFlor objDTO) 
-    { Flor f = new Flor(objDTO.nom,objDTO.preu,objDTO.color);
-      List<Flor> lFlorsFloristeria = mHTFloristeriaFlor.get(mCurrFloristeria);       
+    { Flor f = new Flor(objDTO.getNom(),objDTO.getPreu(),objDTO.getColor());
+      List<Flor> lFlorsFloristeria = baseDades.getmHTFloristeriaFlor().get(mCurrFloristeria);       
       if(lFlorsFloristeria==null) 
       { lFlorsFloristeria = new ArrayList<>();
       }
       boolean bAdded = lFlorsFloristeria.add(f);
-      mHTFloristeriaFlor.put(mCurrFloristeria, lFlorsFloristeria);
+      baseDades.getmHTFloristeriaFlor().put(mCurrFloristeria, lFlorsFloristeria);
       return objDTO;  
     }
 
@@ -132,13 +135,13 @@ public class Controller
      * @throws Exception 
      */
     public DTODecoracio afegirDecoracio(String mCurrFloristeria, DTODecoracio objDTO) throws Exception
-    { Decoracio d = new Decoracio(objDTO.nom,objDTO.preu,Decoracio.tipusMaterial(objDTO.tipus_decoracio));
-      List<Decoracio> lDecoracioFloristeria = mHTFloristeriaDecoracio.get(mCurrFloristeria);       
+    { Decoracio d = new Decoracio(objDTO.getNom(),objDTO.getPreu(),Decoracio.tipusMaterial(objDTO.getTipus_decoracio()));
+      List<Decoracio> lDecoracioFloristeria = baseDades.getmHTFloristeriaDecoracio().get(mCurrFloristeria);       
       if(lDecoracioFloristeria==null) 
       { lDecoracioFloristeria = new ArrayList<>();
       }
       boolean bAdded = lDecoracioFloristeria.add(d);
-      mHTFloristeriaDecoracio.put(mCurrFloristeria, lDecoracioFloristeria);
+      baseDades.getmHTFloristeriaDecoracio().put(mCurrFloristeria, lDecoracioFloristeria);
       return objDTO;         
     }
 
@@ -163,11 +166,11 @@ public class Controller
       int dNumFlors  = 0;
       int dNumDecoracio = 0 ; 
 
-      lArbres = mHTFloristeriaArbre.get(pFloristeria);
+      lArbres = baseDades.getmHTFloristeriaArbre().get(pFloristeria);
       if(lArbres!=null) { dNumArbres = lArbres.size();  }
-      lFlors = mHTFloristeriaFlor.get(pFloristeria);
+      lFlors = baseDades.getmHTFloristeriaFlor().get(pFloristeria);
       if(lFlors!=null)  { dNumFlors = lFlors.size();    }
-      lDecoracio = mHTFloristeriaDecoracio.get(pFloristeria);
+      lDecoracio = baseDades.getmHTFloristeriaDecoracio().get(pFloristeria);
       if(lDecoracio!=null) { dNumDecoracio = lDecoracio.size(); }
           
       int dItems = dNumArbres + dNumFlors + dNumDecoracio;
@@ -218,19 +221,19 @@ public class Controller
       int dNumFlors  = 0;  float fValorFlors = 0;
       int dNumDecoracio = 0 ; float fValorDecoracio = 0;
       
-      List<Arbre> lArbres = mHTFloristeriaArbre.get(pFloristeria);
+      List<Arbre> lArbres = baseDades.getmHTFloristeriaArbre().get(pFloristeria);
       if(lArbres!=null)
       { dNumArbres = lArbres.size();  
         for(Arbre a : lArbres) { fValorArbres += a.getPreu(); }
       }     
       
-      List<Flor> lFlors = mHTFloristeriaFlor.get(pFloristeria);
+      List<Flor> lFlors = baseDades.getmHTFloristeriaFlor().get(pFloristeria);
       if(lFlors!=null)
       { dNumFlors = lFlors.size();  
         for(Flor f : lFlors) { fValorFlors += f.getPreu(); }
       }  
 
-      List<Decoracio> lDecoracio = mHTFloristeriaDecoracio.get(pFloristeria);
+      List<Decoracio> lDecoracio = baseDades.getmHTFloristeriaDecoracio().get(pFloristeria);
       if(lDecoracio!=null)
       { dNumDecoracio = lDecoracio.size();  
         for(Decoracio d : lDecoracio) { fValorDecoracio += d.getPreu(); }
@@ -343,25 +346,25 @@ public class Controller
      *
      */
     public boolean retirarProducte(String pFloristeria, String pNom,Class pClass) throws Exception 
-    { Floristeria floristeria = mHTFloristeria.get(pFloristeria);
+    { Floristeria floristeria = baseDades.getmHTFloristeria().get(pFloristeria);
       if(floristeria==null) { throw new Exception ("Floristeria inexistent"); }
       
       HashMap pHashTable=null; 
       List<Producte> lProducte = null;
       switch (pClass.getName()) 
       { case "m11.model.Arbre": 
-        { lProducte = (List<Producte>)(List<? extends Producte>)mHTFloristeriaArbre.get(pFloristeria); 
-          pHashTable = mHTFloristeriaArbre;
+        { lProducte = (List<Producte>)(List<? extends Producte>)baseDades.getmHTFloristeriaArbre().get(pFloristeria); 
+          pHashTable = baseDades.getmHTFloristeriaArbre();
           break; 
         }
         case "m11.model.Flor":  
-        { lProducte = (List<Producte>)(List<? extends Producte>)mHTFloristeriaFlor.get(pFloristeria); 
-          pHashTable = mHTFloristeriaFlor ;
+        { lProducte = (List<Producte>)(List<? extends Producte>)baseDades.getmHTFloristeriaFlor().get(pFloristeria); 
+          pHashTable = baseDades.getmHTFloristeriaFlor() ;
           break; 
         }
         case "m11.model.Decoracio": 
-        { lProducte = (List<Producte>)(List<? extends Producte>)mHTFloristeriaDecoracio.get(pFloristeria); 
-          pHashTable = mHTFloristeriaDecoracio;
+        { lProducte = (List<Producte>)(List<? extends Producte>)baseDades.getmHTFloristeriaDecoracio().get(pFloristeria); 
+          pHashTable = baseDades.getmHTFloristeriaDecoracio();
           break; 
         }
         default: { break; }
@@ -384,25 +387,25 @@ public class Controller
 
     
     public Producte getProducte(String pFloristeria, String pNom,Class pClass) throws Exception 
-    { Floristeria floristeria = mHTFloristeria.get(pFloristeria);
+    { Floristeria floristeria = baseDades.getmHTFloristeria().get(pFloristeria);
       if(floristeria==null) { throw new Exception ("Floristeria inexistent"); }
       
       HashMap pHashTable=null; 
       List<Producte> lProducte = null;
       switch (pClass.getName()) 
       { case "m11.model.Arbre": 
-        { lProducte = (List<Producte>)(List<? extends Producte>)mHTFloristeriaArbre.get(pFloristeria); 
-          pHashTable = mHTFloristeriaArbre;
+        { lProducte = (List<Producte>)(List<? extends Producte>)baseDades.getmHTFloristeriaArbre().get(pFloristeria); 
+          pHashTable = baseDades.getmHTFloristeriaArbre();
           break; 
         }
         case "m11.model.Flor":  
-        { lProducte = (List<Producte>)(List<? extends Producte>)mHTFloristeriaFlor.get(pFloristeria); 
-          pHashTable = mHTFloristeriaFlor ;
+        { lProducte = (List<Producte>)(List<? extends Producte>)baseDades.getmHTFloristeriaFlor().get(pFloristeria); 
+          pHashTable = baseDades.getmHTFloristeriaFlor() ;
           break; 
         }
         case "m11.model.Decoracio": 
-        { lProducte = (List<Producte>)(List<? extends Producte>)mHTFloristeriaDecoracio.get(pFloristeria); 
-          pHashTable = mHTFloristeriaDecoracio;
+        { lProducte = (List<Producte>)(List<? extends Producte>)baseDades.getmHTFloristeriaDecoracio().get(pFloristeria); 
+          pHashTable = baseDades.getmHTFloristeriaDecoracio();
           break; 
         }
         default: { break; }
@@ -428,13 +431,13 @@ public class Controller
      * @return 
      */
     public int getNewTicket(String pFloristeria) throws Exception
-    { Floristeria floristeria = mHTFloristeria.get(pFloristeria);
+    { Floristeria floristeria = baseDades.getmHTFloristeria().get(pFloristeria);
       if(floristeria==null) { throw new Exception ("Floristeria inexistent"); }
       
       Ticket t = new Ticket();
       int tickedId = t.getTicketId();
       
-      HashMap<Integer,Ticket> hm = mHTTicketsOberts.get(pFloristeria); // Obtenir hashtable de tickets per la floristeria
+      HashMap<Integer,Ticket> hm = baseDades.getmHTTicketsOberts().get(pFloristeria); // Obtenir hashtable de tickets per la floristeria
       if(hm==null) { throw new Exception ("Hash table de tickets oberts inexistent per la floristeria."); }               
       hm.put(tickedId, t); //Afegir el ticket a gestionar
       
@@ -451,10 +454,10 @@ public class Controller
      * @throws Exception 
      */
     public boolean afegirProducteTicket(String pFloristeria,int idTicket, String pItem, String pNom) throws Exception
-    { Floristeria floristeria = mHTFloristeria.get(pFloristeria);
+    { Floristeria floristeria = baseDades.getmHTFloristeria().get(pFloristeria);
       if(floristeria==null) { throw new Exception ("Floristeria inexistent"); }
       
-      HashMap<Integer,Ticket> hm = mHTTicketsOberts.get(pFloristeria); // Obtenir estructura de la floristeria
+      HashMap<Integer,Ticket> hm = baseDades.getmHTTicketsOberts().get(pFloristeria); // Obtenir estructura de la floristeria
       if(hm==null) { throw new Exception ("Hash table de tickets oberts inexistent per la floristeria."); }         
       
       Ticket t = hm.get(idTicket); // obtenir el ticket
@@ -477,13 +480,13 @@ public class Controller
      * @throws Exception 
      */
     public boolean confirmarTicket(String pFloristeria, int idTicket) throws Exception 
-    { Floristeria floristeria = mHTFloristeria.get(pFloristeria);
+    { Floristeria floristeria = baseDades.getmHTFloristeria().get(pFloristeria);
       if(floristeria==null) { throw new Exception ("Floristeria inexistent"); }
         
-      HashMap<Integer,Ticket> hmOberts = mHTTicketsOberts.get(pFloristeria); // Obtenir estructura de la floristeria
+      HashMap<Integer,Ticket> hmOberts = baseDades.getmHTTicketsOberts().get(pFloristeria); // Obtenir estructura de la floristeria
       if(hmOberts==null) { throw new Exception ("Hash table de tickets oberts inexistent per la floristeria."); }   
 
-      HashMap<Integer,Ticket> hmTancats = mHTTicketsTancats.get(pFloristeria); // Obtenir estructura de la floristeria Tickets ja venuts
+      HashMap<Integer,Ticket> hmTancats = baseDades.getmHTTicketsTancats().get(pFloristeria); // Obtenir estructura de la floristeria Tickets ja venuts
       if(hmTancats==null) { throw new Exception ("Hash table de tickets tancats inexistent per la floristeria."); }   
 
       Ticket t = hmOberts.get(idTicket); // Obtenir el ticket de la llista(hashtable) d'oberts
@@ -508,10 +511,10 @@ public class Controller
      */
     public DTOStock mostrarVendes(String pFloristeria) throws Exception 
     { DTOStock objDTOVendes = new DTOStock();
-      Floristeria floristeria = mHTFloristeria.get(pFloristeria);
+      Floristeria floristeria = baseDades.getmHTFloristeria().get(pFloristeria);
       if(floristeria==null) { throw new Exception ("Floristeria inexistent"); }
         
-      HashMap<Integer,Ticket> hmTancats = mHTTicketsTancats.get(pFloristeria); // Tockets tancats
+      HashMap<Integer,Ticket> hmTancats = baseDades.getmHTTicketsTancats().get(pFloristeria); // Tockets tancats
       if(hmTancats==null) { throw new Exception ("Hash table de tickets tancats inexistent per la floristeria."); }  
         
       objDTOVendes.mHeaders = new String [] { "Ticket", "Descripcio" }; 

@@ -11,9 +11,13 @@ package m11.model;
  */
 public class DTODecoracio extends DTOProducte
 {
-  public String tipus_decoracio;
+  private String tipus_decoracio;
         
-  public DTODecoracio(String pNom,float pPreu,String pTipusDecoracio)
+  public String getTipus_decoracio() {
+	return tipus_decoracio;
+}
+
+public DTODecoracio(String pNom,float pPreu,String pTipusDecoracio)
   { super(pNom,pPreu);
     tipus_decoracio = pTipusDecoracio;
   }  

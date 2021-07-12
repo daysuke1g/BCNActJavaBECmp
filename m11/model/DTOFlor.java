@@ -11,9 +11,13 @@ package m11.model;
  */
 public class DTOFlor extends DTOProducte
 {
-  public String color;
+  private String color;
         
-  public DTOFlor(String pNom,float pPreu,String pColor)
+  public String getColor() {
+	return color;
+}
+
+public DTOFlor(String pNom,float pPreu,String pColor)
   { super(pNom,pPreu);
     color = pColor;
   }
