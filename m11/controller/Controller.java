@@ -19,6 +19,7 @@ import m11.model.Flor;
 import m11.model.Floristeria;
 import m11.model.Producte;
 import m11.model.Ticket;
+import m11.repository.*;
 
 /**
  *
